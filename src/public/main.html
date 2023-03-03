@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Chat Azulado</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-q93X7VxIlZlhcND7VpYnY8JCYVc+OhF6abVPVYLspv4gkKtDbxMZtIaCtY5il5S5C5b3qMDQHd2/H++jpN9g+Q==" crossorigin="anonymous" referrerpolicy="no-referrer"
+    />
+    <script src="https://cdn.socket.io/socket.io-3.0.1.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <script>
+        let socket = io();
+
+        function sendMessage() {
+            const messageInput = document.getElementById("messageInput");
+            const message = messageInput.value;
+            socket.emit("chatMessage", message);
+            messageInput.value = "";
+        }
+
+        socket.on("chatMessage", (message) => {
+            const messageList = document.getElementById("messageList");
+            const newMessage = document.createElement("p");
+            newMessage.innerText = message;
+            messageList.appendChild(newMessage);
+        });
+
+        async function cadastro() {
+
+
+            const nomeUsuario = document.getElementById("nomeUsuario");
+            const email = document.getElementById("email");
+            const nick = document.getElementById("nick");
+            const senha = document.getElementById("senha");
+
+            let objCadastro = {
+                userCadastro: nomeUsuario.value,
+                emailCadastro: email.value,
+                nickCadastro: nick.value,
+                senhaCadastro: senha.value
+
+            }
+            socket.emit("sendCadastro", objCadastro)
+
+            console.log(objCadastro)
+        }
+    </script>
+</head>
+
+<body>
+    <header>
+
+        <nav>
+            <h1 class="logo">Chat Azulado</h1>
+            <ul class="nav-itens">
+                <li><a href="#" data-toggle="modal" data-target="#registroModal"><i class="fas fa-cog"></i>Register</a></li>
+                <li><a href="#"><i class="fas fa-sign-out-alt">Login</i></a></li>
+            </ul>
+        </nav>
+    </header>
+    <div class="container-principal">
+        <div class="user-list">
+            <h2>Usuários</h2>
+            <ul>
+                <li class="active">Geral</li>
+
+                <li>André</li>
+            </ul>
+        </div>
+        <div class="chat-container">
+            <div class="chat-header">
+                <h2>Geral</h2>
+            </div>
+            <div class="messages-container">
+                <div class="message other-message" id="messageList">
+                    <p>Olá! Tudo bem?</p>
+                </div>
+                <div class="message my-message">
+                    <p>Sim, e você?</p>
+                </div>
+
+            </div>
+            <div class="new-message-container">
+                <div class="new-message-form">
+                    <input type="text" placeholder="Digite sua mensagem..." id="messageInput">
+                    <button type="submit" onclick="sendMessage()"><i class="fas fa-paper-plane">Send</i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- modal registro -->
+
+    <div class="modal fade" id="registroModal" tabindex="-1" role="dialog" aria-labelledby="registroModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="registroModalLabel">Registrar</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                <span aria-hidden="true">&times;</span>
+              </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="nomeUsuario">Nome de usuário</label>
+                            <input type="text" class="form-control" id="nomeUsuario" placeholder="Digite seu nome de usuário">
+                        </div>
+                        <div class="form-group">
+                            <label for="email">E-mail</label>
+                            <input type="email" class="form-control" id="email" placeholder="Digite seu e-mail">
+                        </div>
+                        <div class="form-group">
+                            <label for="nick">Nick</label>
+                            <input type="text" class="form-control" id="nick" placeholder="Digite seu nick">
+                        </div>
+                        <div class="form-group">
+                            <label for="senha">Senha</label>
+                            <input type="password" class="form-control" id="senha" placeholder="Digite sua senha">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                    <button type="button" class="btn btn-primary" onclick="cadastro()">Registrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>
